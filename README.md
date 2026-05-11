@@ -11,7 +11,7 @@ Angular single-page application that simulates a live flight operations view: fl
 
 | Requirement | Notes |
 |-------------|--------|
-| **Node.js** | **v18.x or v20.x LTS** recommended (Angular 16 is supported on current LTS). |
+| **Node.js** | **v18.x or v20.x LTS** recommended (Angular 18 is supported on current LTS). |
 | **npm** | Installed with Node (npm 9+ is fine). |
 | **Chrome** (optional) | Required locally if you run **unit tests** (`ng test` uses Karma + Chrome). |
 
@@ -163,7 +163,7 @@ This repository includes **[`.github/workflows/github-pages.yml`](.github/workfl
 
 ### Live URL (this repo name)
 
-**https://pralipta123.github.io/flighttracking/**
+**https://pralipta123.github.io/flighttracking/flights**
 
 If you **rename the repository**, edit the workflow and set `--base-href` to `/<new-repo-name>/`.
 
