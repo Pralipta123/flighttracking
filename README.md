@@ -2,8 +2,8 @@
 
 Angular single-page application that simulates a live flight operations view: fleet table, interactive map (Leaflet), search and filters, flight details, safety alerts, incident reporting, and role-based UI.
 
-**Stack:** Angular 16, Angular Material, RxJS, Reactive Forms, Leaflet (OpenStreetMap tiles).  
-**CLI version:** 16.2.x (see `package.json`).
+**Stack:** Angular 18, Angular Material, RxJS, Reactive Forms, Leaflet (OpenStreetMap tiles).  
+**CLI version:** 18.2.x (see `package.json`).
 
 ---
 
