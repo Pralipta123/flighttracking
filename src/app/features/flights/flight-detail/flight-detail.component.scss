@@ -1,0 +1,369 @@
+.detail-page {
+  max-width: 1040px;
+  margin: 0 auto;
+}
+
+.detail-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.back-btn {
+  border-radius: 999px;
+}
+
+.detail-toolbar-hint {
+  font-size: 13px;
+  color: var(--ft-text-muted, #5c6b80);
+}
+
+.viewer-banner {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  margin-bottom: 16px;
+  padding: 14px 18px;
+  border-left: 4px solid #00838f;
+  background: linear-gradient(90deg, rgba(0, 131, 143, 0.08), #fff);
+
+  mat-icon {
+    color: #00838f;
+    margin-top: 2px;
+  }
+
+  p {
+    margin: 4px 0 0;
+    color: var(--ft-text-muted, #5c6b80);
+    font-size: 14px;
+    line-height: 1.45;
+  }
+}
+
+.detail-hero {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+  padding: 22px 24px;
+  border-radius: var(--ft-radius-lg, 16px);
+  background: linear-gradient(125deg, #ffffff 0%, #f4f7fb 100%);
+  border: 1px solid var(--ft-border, rgba(13, 21, 32, 0.08));
+  box-shadow: var(--ft-shadow-soft, 0 2px 12px rgba(13, 21, 32, 0.06));
+}
+
+.eyebrow {
+  margin: 0 0 6px;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-weight: 600;
+  color: var(--ft-text-muted, #5c6b80);
+}
+
+.detail-title {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--ft-text, #1a2332);
+}
+
+.callsign {
+  margin: 6px 0 0;
+  font-size: 1rem;
+  color: #006064;
+  font-weight: 600;
+}
+
+.hero-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  border: 1px solid var(--ft-border, rgba(13, 21, 32, 0.08));
+  background: #fff;
+}
+
+.badge-aircraft {
+  color: #283593;
+  background: #e8eaf6;
+}
+
+.badge-fir {
+  color: #37474f;
+  background: #eceff1;
+}
+
+.badge-status.st-scheduled {
+  background: #e8eaf6;
+  color: #283593;
+}
+.badge-status.st-boarding {
+  background: #e1f5fe;
+  color: #01579b;
+}
+.badge-status.st-departed {
+  background: #e0f2f1;
+  color: #004d40;
+}
+.badge-status.st-enroute {
+  background: #e8eaf6;
+  color: #1a237e;
+}
+.badge-status.st-delayed {
+  background: #fff3e0;
+  color: #e65100;
+}
+.badge-status.st-landed {
+  background: #e8f5e9;
+  color: #1b5e20;
+}
+
+.panel {
+  border: 1px solid var(--ft-border, rgba(13, 21, 32, 0.08));
+  box-shadow: var(--ft-shadow-soft, 0 2px 12px rgba(13, 21, 32, 0.06)) !important;
+}
+
+.panel-avatar {
+  display: grid !important;
+  place-items: center;
+  border-radius: 12px !important;
+  color: #fff !important;
+  background: linear-gradient(145deg, #3949ab, #7986cb) !important;
+
+  mat-icon {
+    font-size: 22px;
+    width: 22px;
+    height: 22px;
+    color: #fff;
+  }
+
+  &.warn {
+    background: linear-gradient(145deg, #f57c00, #ffb74d) !important;
+  }
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.block {
+  margin-bottom: 16px;
+}
+
+.row {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.kv {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  gap: 10px 12px;
+  margin: 0;
+  font-size: 14px;
+
+  dt {
+    margin: 0;
+    color: var(--ft-text-muted, #5c6b80);
+    font-weight: 600;
+  }
+
+  dd {
+    margin: 0;
+  }
+
+  &.tight {
+    margin-top: 16px;
+  }
+}
+
+.mono {
+  font-family: ui-monospace, 'Cascadia Mono', 'Segoe UI Mono', monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+.route-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.airport-block {
+  flex: 1 1 120px;
+  padding: 12px 14px;
+  border-radius: var(--ft-radius-md, 12px);
+  background: #f4f7fb;
+  border: 1px solid var(--ft-border, rgba(13, 21, 32, 0.08));
+
+  &.end {
+    text-align: right;
+  }
+
+  .iata {
+    display: block;
+    font-weight: 800;
+    font-size: 1.25rem;
+    color: #1a237e;
+  }
+
+  .name {
+    display: block;
+    font-size: 12px;
+    color: var(--ft-text-muted, #5c6b80);
+    margin-top: 4px;
+    line-height: 1.35;
+  }
+}
+
+.route-arrow {
+  color: #00838f;
+}
+
+.timeline {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.timeline li {
+  position: relative;
+  padding-left: 28px;
+  padding-bottom: 18px;
+}
+
+.timeline li .line {
+  position: absolute;
+  left: 9px;
+  top: 10px;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(180deg, #b0bec5, #eceff1);
+}
+
+.timeline li .dot {
+  position: absolute;
+  left: 4px;
+  top: 4px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #00838f;
+  border: 2px solid #fff;
+  box-shadow: 0 0 0 2px #b2ebf2;
+}
+
+.timeline li.last {
+  padding-bottom: 0;
+}
+
+.event-title {
+  font-weight: 600;
+  color: var(--ft-text, #1a2332);
+}
+
+.event-time {
+  font-size: 12px;
+  color: var(--ft-text-muted, #5c6b80);
+  margin-top: 2px;
+}
+
+.event-detail {
+  font-size: 13px;
+  margin-top: 4px;
+  color: #455a64;
+}
+
+.table-scroll {
+  overflow-x: auto;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  min-width: 480px;
+}
+
+.data-table th,
+.data-table td {
+  padding: 10px 8px;
+  text-align: left;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.data-table thead th {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ft-text-muted, #5c6b80);
+  background: #f4f7fb;
+}
+
+.chan {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: #eceff1;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.dir {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  background: #fff3e0;
+  color: #e65100;
+
+  &.in {
+    background: #e8f5e9;
+    color: #2e7d32;
+  }
+}
+
+.empty-state {
+  text-align: center;
+  padding: 40px 24px;
+  max-width: 520px;
+  margin: 40px auto;
+
+  mat-icon {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    color: #90a4ae;
+    margin-bottom: 12px;
+  }
+
+  h2 {
+    margin: 0 0 8px;
+  }
+
+  p {
+    color: var(--ft-text-muted, #5c6b80);
+    line-height: 1.5;
+    margin-bottom: 20px;
+  }
+}

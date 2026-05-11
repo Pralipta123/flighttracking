@@ -1,0 +1,181 @@
+<section class="page-hero">
+  <div class="hero-copy">
+    <h1 class="page-title">Operations dashboard</h1>
+    <p class="page-lead">
+      Simulated fleet positions, FIR coverage, and route geometry update every few seconds via RxJS
+      <code>interval</code> with mock WebSocket snapshots for integration-style testing.
+    </p>
+  </div>
+  <div class="hero-stats">
+    <div class="stat-card">
+      <span class="stat-label">Table</span>
+      <span class="stat-value">Live</span>
+      <span class="stat-hint">trackBy flight id</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-label">Map</span>
+      <span class="stat-value">Leaflet</span>
+      <span class="stat-hint">OSM tiles</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-label">Search</span>
+      <span class="stat-value">RxJS</span>
+      <span class="stat-hint">debounce · distinct · switchMap</span>
+    </div>
+  </div>
+</section>
+
+<mat-card class="filter-card">
+  <mat-card-header>
+    <div mat-card-avatar class="filter-avatar">
+      <mat-icon>tune</mat-icon>
+    </div>
+    <mat-card-title>Search &amp; filters</mat-card-title>
+    <mat-card-subtitle>Filter the table and map together. Search matches flight ID, airport names or codes, and FIR text.</mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content class="filters">
+    <mat-form-field appearance="outline" class="grow">
+      <mat-label>Flight ID / airport / FIR</mat-label>
+      <input matInput [formControl]="searchControl" placeholder="Try JFK, FLT-101, or NAM…" />
+      <mat-icon matSuffix>search</mat-icon>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Status</mat-label>
+      <mat-select [formControl]="statusControl">
+        <mat-option value="">All statuses</mat-option>
+        <mat-option *ngFor="let s of statusOptions" [value]="s">{{ s }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Aircraft type</mat-label>
+      <input matInput [formControl]="aircraftControl" placeholder="Contains…" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>FIR region</mat-label>
+      <input matInput [formControl]="firControl" placeholder="Contains…" />
+    </mat-form-field>
+  </mat-card-content>
+</mat-card>
+
+<div class="split">
+  <mat-card class="table-card mat-elevation-z2">
+    <mat-card-header class="card-head">
+      <div mat-card-avatar class="head-avatar table-avatar">
+        <mat-icon>table_chart</mat-icon>
+      </div>
+      <mat-card-title>Flight monitoring</mat-card-title>
+      <mat-card-subtitle>Required columns including airports, FIR, coordinates, altitude, speed, status, ETA, and last update.</mat-card-subtitle>
+    </mat-card-header>
+    <mat-divider></mat-divider>
+    <div class="table-wrap">
+      <table mat-table [dataSource]="dataSource" class="ft-table" [trackBy]="trackByFlightId">
+        <ng-container matColumnDef="id">
+          <th mat-header-cell *matHeaderCellDef>Flight ID</th>
+          <td mat-cell *matCellDef="let f">
+            <span class="mono flight-id">{{ f.id }}</span>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="aircraftType">
+          <th mat-header-cell *matHeaderCellDef>Aircraft type</th>
+          <td mat-cell *matCellDef="let f">{{ f.aircraftType }}</td>
+        </ng-container>
+        <ng-container matColumnDef="departure">
+          <th mat-header-cell *matHeaderCellDef>Departure airport</th>
+          <td mat-cell *matCellDef="let f" class="airport-cell">
+            <span class="airport-iata">{{ f.departure.iata }}</span>
+            <span class="airport-name" [matTooltip]="f.departure.name">{{ f.departure.name }}</span>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="destination">
+          <th mat-header-cell *matHeaderCellDef>Destination airport</th>
+          <td mat-cell *matCellDef="let f" class="airport-cell">
+            <span class="airport-iata">{{ f.destination.iata }}</span>
+            <span class="airport-name" [matTooltip]="f.destination.name">{{ f.destination.name }}</span>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="firRegion">
+          <th mat-header-cell *matHeaderCellDef>FIR region</th>
+          <td mat-cell *matCellDef="let f"><span class="fir-chip">{{ f.firRegion }}</span></td>
+        </ng-container>
+        <ng-container matColumnDef="latitude">
+          <th mat-header-cell *matHeaderCellDef>Latitude</th>
+          <td mat-cell *matCellDef="let f" class="mono">{{ f.latitude | number : '1.2-2' }}</td>
+        </ng-container>
+        <ng-container matColumnDef="longitude">
+          <th mat-header-cell *matHeaderCellDef>Longitude</th>
+          <td mat-cell *matCellDef="let f" class="mono">{{ f.longitude | number : '1.2-2' }}</td>
+        </ng-container>
+        <ng-container matColumnDef="altitudeFt">
+          <th mat-header-cell *matHeaderCellDef>Altitude (ft)</th>
+          <td mat-cell *matCellDef="let f" class="mono">{{ f.altitudeFt | number : '1.0-0' }}</td>
+        </ng-container>
+        <ng-container matColumnDef="speedKts">
+          <th mat-header-cell *matHeaderCellDef>Speed (kts)</th>
+          <td mat-cell *matCellDef="let f" class="mono">{{ f.speedKts | number : '1.0-0' }}</td>
+        </ng-container>
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef>Status</th>
+          <td mat-cell *matCellDef="let f">
+            <span class="status-pill" [ngClass]="statusClass(f.status)">{{ f.status }}</span>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="eta">
+          <th mat-header-cell *matHeaderCellDef>ETA</th>
+          <td mat-cell *matCellDef="let f" class="mono">{{ f.eta | date : 'short' }}</td>
+        </ng-container>
+        <ng-container matColumnDef="lastUpdated">
+          <th mat-header-cell *matHeaderCellDef>Last updated</th>
+          <td mat-cell *matCellDef="let f" class="mono muted-time">{{ f.lastUpdated | date : 'medium' }}</td>
+        </ng-container>
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef class="col-actions"></th>
+          <td mat-cell *matCellDef="let f" class="col-actions" (click)="$event.stopPropagation()">
+            <mat-form-field
+              *ngIf="permissions.canUpdateFlightStatus"
+              appearance="fill"
+              class="inline-status"
+              subscriptSizing="dynamic"
+            >
+              <mat-select
+                [value]="f.status"
+                (selectionChange)="quickStatusUpdate(f, $event.value)"
+                [matTooltip]="'Update status (' + f.id + ')'"
+                [attr.aria-label]="'Update operational status for ' + f.id"
+              >
+                <mat-option *ngFor="let s of statusOptions" [value]="s">{{ s }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+            <button mat-icon-button color="primary" (click)="openDetail(f)" matTooltip="Open flight details">
+              <mat-icon>arrow_forward</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+        <tr
+          mat-row
+          *matRowDef="let row; columns: displayedColumns"
+          (click)="openDetail(row)"
+          class="click-row"
+        ></tr>
+      </table>
+    </div>
+  </mat-card>
+
+  <mat-card class="map-card mat-elevation-z2">
+    <mat-card-header class="card-head">
+      <div mat-card-avatar class="head-avatar map-avatar">
+        <mat-icon>map</mat-icon>
+      </div>
+      <mat-card-title>Interactive map</mat-card-title>
+      <mat-card-subtitle>Routes (dashed), status-colored markers, click a marker for flight ID, route, speed, altitude, and status.</mat-card-subtitle>
+    </mat-card-header>
+    <mat-divider></mat-divider>
+    <mat-card-content class="map-body">
+      <app-flight-map [flights]="(filteredFlights$ | async) ?? []"></app-flight-map>
+    </mat-card-content>
+  </mat-card>
+</div>

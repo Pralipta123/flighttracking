@@ -1,0 +1,91 @@
+<mat-toolbar color="primary" class="ft-toolbar">
+  <div class="toolbar-inner">
+    <div class="brand-block">
+      <div class="logo-mark" aria-hidden="true">
+        <mat-icon>flight_takeoff</mat-icon>
+      </div>
+      <div class="brand-text">
+        <span class="brand-title">Flight Ops</span>
+        <span class="brand-sub">Tracking &amp; simulation</span>
+      </div>
+    </div>
+
+    <span class="live-pill" matTooltip="Positions refresh via RxJS interval; mock WebSocket snapshots in console">
+      <span class="live-dot" aria-hidden="true"></span>
+      Live simulation
+    </span>
+
+    <span class="spacer"></span>
+
+    <nav class="nav-links">
+      <a mat-stroked-button routerLink="/flights" routerLinkActive="nav-active" [routerLinkActiveOptions]="{ exact: true }">
+        <mat-icon>dashboard</mat-icon>
+        Dashboard
+      </a>
+      <a
+        mat-stroked-button
+        routerLink="/flights/incidents"
+        routerLinkActive="nav-active"
+        *ngIf="auth.permissions().canAccessIncidentForm"
+      >
+        <mat-icon>assignment</mat-icon>
+        Incidents
+      </a>
+    </nav>
+
+    <button
+      mat-icon-button
+      class="alert-btn"
+      [matMenuTriggerFor]="alertMenu"
+      matTooltip="Safety &amp; ops alerts"
+      [class.alert-pulse]="alertCount > 0"
+    >
+      <mat-icon [matBadge]="alertCount" [matBadgeHidden]="alertCount === 0" matBadgeColor="warn" matBadgeSize="small"
+        >notifications</mat-icon
+      >
+    </button>
+
+    <mat-menu #alertMenu="matMenu" class="ft-alert-menu" xPosition="before">
+      <div class="alert-menu-header" mat-menu-item disabled>
+        <mat-icon class="header-icon">shield</mat-icon>
+        <span>Alerts</span>
+        <span class="count" *ngIf="alertCount">{{ alertCount }}</span>
+      </div>
+      <mat-divider></mat-divider>
+      <div class="alert-scroll">
+        <ng-container *ngIf="recentAlerts.length; else noAlerts">
+          <button
+            mat-menu-item
+            *ngFor="let a of recentAlerts"
+            class="alert-row"
+            [class.critical]="a.severity === 'critical'"
+            (click)="dismissAlert(a.id, $event)"
+          >
+            <mat-icon class="alert-type-icon">{{ a.type === 'ALTITUDE_DROP' ? 'trending_down' : a.type === 'SPEED_EXCEEDED' ? 'bolt' : 'schedule' }}</mat-icon>
+            <span class="alert-msg">{{ a.message }}</span>
+            <span class="alert-time">{{ a.at | date : 'shortTime' }}</span>
+          </button>
+        </ng-container>
+        <ng-template #noAlerts>
+          <div class="empty-alerts" mat-menu-item disabled>No active alerts</div>
+        </ng-template>
+      </div>
+      <mat-divider *ngIf="recentAlerts.length"></mat-divider>
+      <button mat-menu-item (click)="clearAlerts()" [disabled]="!alertCount">
+        <mat-icon>delete_sweep</mat-icon>
+        Clear all
+      </button>
+    </mat-menu>
+
+    <mat-form-field appearance="fill" class="role-field" subscriptSizing="dynamic">
+      <mat-label>Role</mat-label>
+      <mat-select [value]="selectedRole" (selectionChange)="onRoleChange($event.value)" panelClass="ft-role-panel">
+        <mat-option *ngFor="let r of roles" [value]="r">{{ r | titlecase }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+</mat-toolbar>
+
+<main class="content">
+  <router-outlet></router-outlet>
+</main>

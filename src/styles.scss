@@ -1,1 +1,128 @@
-/* You can add global styles to this file, and also import other style files */
+@use '@angular/material' as mat;
+
+@include mat.core();
+
+// Aviation-inspired primary (deep slate blue)
+$ft-primary: (
+  50: #e8eaf0,
+  100: #c5cad6,
+  200: #9ea7b8,
+  300: #778499,
+  400: #5a6a82,
+  500: #3d516f,
+  600: #354763,
+  700: #2b3c54,
+  800: #213246,
+  900: #132030,
+  contrast: (
+    50: rgba(black, 0.87),
+    100: rgba(black, 0.87),
+    200: rgba(black, 0.87),
+    300: white,
+    400: white,
+    500: white,
+    600: white,
+    700: white,
+    800: white,
+    900: white,
+  ),
+);
+
+$ft-accent: (
+  50: #e0f7fa,
+  100: #b2ebf2,
+  200: #80deea,
+  300: #4dd0e1,
+  400: #26c6da,
+  500: #00bcd4,
+  600: #00acc1,
+  700: #0097a7,
+  800: #00838f,
+  900: #006064,
+  contrast: (
+    50: rgba(black, 0.87),
+    100: rgba(black, 0.87),
+    200: rgba(black, 0.87),
+    300: rgba(black, 0.87),
+    400: rgba(black, 0.87),
+    500: white,
+    600: white,
+    700: white,
+    800: white,
+    900: white,
+  ),
+);
+
+$flight-primary: mat.define-palette($ft-primary, 700, 500, 900);
+$flight-accent: mat.define-palette($ft-accent, 500, 300, 700);
+$flight-warn: mat.define-palette(mat.$deep-orange-palette, A400);
+
+$flight-theme: mat.define-light-theme(
+  (
+    color: (
+      primary: $flight-primary,
+      accent: $flight-accent,
+      warn: $flight-warn,
+    ),
+    typography: mat.define-typography-config(
+      $font-family: 'DM Sans, Roboto, "Helvetica Neue", sans-serif'
+    ),
+    density: -1,
+  )
+);
+
+@include mat.all-component-themes($flight-theme);
+
+:root {
+  --ft-bg-top: #0d1520;
+  --ft-bg-mid: #152238;
+  --ft-bg-bottom: #1a2d44;
+  --ft-surface: #ffffff;
+  --ft-surface-muted: #f4f7fb;
+  --ft-border: rgba(13, 21, 32, 0.08);
+  --ft-text: #1a2332;
+  --ft-text-muted: #5c6b80;
+  --ft-accent: #00acc1;
+  --ft-radius-lg: 16px;
+  --ft-radius-md: 12px;
+  --ft-shadow: 0 8px 32px rgba(13, 21, 32, 0.12);
+  --ft-shadow-soft: 0 2px 12px rgba(13, 21, 32, 0.06);
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  color: var(--ft-text);
+  font-family: 'DM Sans', Roboto, 'Helvetica Neue', sans-serif;
+  background: linear-gradient(165deg, var(--ft-bg-top) 0%, var(--ft-bg-mid) 42%, var(--ft-bg-bottom) 100%);
+  background-attachment: fixed;
+}
+
+.leaflet-container {
+  font-family: 'DM Sans', Roboto, 'Helvetica Neue', sans-serif;
+  border-radius: var(--ft-radius-md);
+}
+
+// Snackbar panels (global overlay)
+.snackbar-critical .mat-mdc-snack-bar-container .mdc-snackbar__surface {
+  background-color: #b71c1c !important;
+}
+
+.snackbar-warning .mat-mdc-snack-bar-container .mdc-snackbar__surface {
+  background-color: #e65100 !important;
+}
+
+.mat-mdc-table .mat-mdc-header-cell {
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.mat-mdc-card {
+  border-radius: var(--ft-radius-lg) !important;
+}
+
+.mat-mdc-raised-button.mat-primary,
+.mat-mdc-unelevated-button.mat-primary {
+  border-radius: 999px;
+}

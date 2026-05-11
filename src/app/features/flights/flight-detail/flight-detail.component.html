@@ -1,0 +1,184 @@
+<div class="detail-page">
+  <div class="detail-toolbar">
+    <button mat-stroked-button routerLink="/flights" class="back-btn">
+      <mat-icon>arrow_back</mat-icon>
+      Dashboard
+    </button>
+    <span class="detail-toolbar-hint" *ngIf="flight">Live view · positions refresh with the simulation clock</span>
+  </div>
+
+  <mat-card class="viewer-banner" *ngIf="flight && !permissions.canUpdateFlightStatus">
+    <mat-icon>visibility</mat-icon>
+    <div>
+      <strong>Viewer mode</strong>
+      <p>Status updates and incident reporting are disabled for your role.</p>
+    </div>
+  </mat-card>
+
+  <ng-container *ngIf="flight as f">
+    <header class="detail-hero">
+      <div>
+        <p class="eyebrow">Selected flight</p>
+        <h1 class="detail-title">{{ f.id }}</h1>
+        <p class="callsign">{{ f.callSign }}</p>
+      </div>
+      <div class="hero-badges">
+        <span class="badge badge-aircraft">{{ f.aircraftType }}</span>
+        <span class="badge badge-status" [ngClass]="'st-' + (f.status | lowercase)">{{ f.status }}</span>
+        <span class="badge badge-fir">{{ f.firRegion }}</span>
+      </div>
+    </header>
+
+    <mat-card class="panel" *ngIf="permissions.canUpdateFlightStatus">
+      <mat-card-header>
+        <div mat-card-avatar class="panel-avatar warn"><mat-icon>edit_notifications</mat-icon></div>
+        <mat-card-title>Operational update</mat-card-title>
+        <mat-card-subtitle>Controllers and supervisors may override the simulated status for exercises.</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content class="row">
+        <mat-form-field appearance="outline">
+          <mat-label>Status</mat-label>
+          <mat-select [value]="f.status" (selectionChange)="applyStatus($event.value)">
+            <mat-option *ngFor="let s of statusOptions" [value]="s">{{ s }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </mat-card-content>
+    </mat-card>
+
+    <div class="grid">
+      <mat-card class="panel">
+        <mat-card-header>
+          <div mat-card-avatar class="panel-avatar"><mat-icon>airlines</mat-icon></div>
+          <mat-card-title>Aircraft information</mat-card-title>
+        </mat-card-header>
+        <mat-divider></mat-divider>
+        <mat-card-content>
+          <dl class="kv">
+            <dt>Type</dt>
+            <dd>{{ f.aircraftType }}</dd>
+            <dt>Call sign</dt>
+            <dd>{{ f.callSign }}</dd>
+            <dt>Speed</dt>
+            <dd class="mono">{{ f.speedKts | number : '1.0-0' }} kts</dd>
+            <dt>Altitude</dt>
+            <dd class="mono">{{ f.altitudeFt | number : '1.0-0' }} ft</dd>
+          </dl>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="panel">
+        <mat-card-header>
+          <div mat-card-avatar class="panel-avatar"><mat-icon>route</mat-icon></div>
+          <mat-card-title>Route information</mat-card-title>
+        </mat-card-header>
+        <mat-divider></mat-divider>
+        <mat-card-content>
+          <div class="route-line">
+            <div class="airport-block">
+              <span class="iata">{{ f.departure.iata }}</span>
+              <span class="name">{{ f.departure.name }}</span>
+            </div>
+            <mat-icon class="route-arrow">trending_flat</mat-icon>
+            <div class="airport-block end">
+              <span class="iata">{{ f.destination.iata }}</span>
+              <span class="name">{{ f.destination.name }}</span>
+            </div>
+          </div>
+          <dl class="kv tight">
+            <dt>Position</dt>
+            <dd class="mono">{{ f.latitude | number : '1.4-4' }}, {{ f.longitude | number : '1.4-4' }}</dd>
+            <dt>ETA</dt>
+            <dd>{{ f.eta | date : 'full' }}</dd>
+            <dt>Scheduled arrival</dt>
+            <dd>{{ f.scheduledArrival | date : 'full' }}</dd>
+          </dl>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <mat-card class="panel block" *ngIf="extras">
+      <mat-card-header>
+        <div mat-card-avatar class="panel-avatar"><mat-icon>timeline</mat-icon></div>
+        <mat-card-title>Timeline</mat-card-title>
+        <mat-card-subtitle>Key milestones for this rotation.</mat-card-subtitle>
+      </mat-card-header>
+      <mat-divider></mat-divider>
+      <mat-card-content>
+        <ol class="timeline">
+          <li *ngFor="let ev of extras.timeline; let last = last" [class.last]="last">
+            <div class="dot"></div>
+            <div class="line" *ngIf="!last"></div>
+            <div class="event-body">
+              <div class="event-title">{{ ev.label }}</div>
+              <div class="event-time">{{ ev.at | date : 'medium' }}</div>
+              <div class="event-detail" *ngIf="ev.detail">{{ ev.detail }}</div>
+            </div>
+          </li>
+        </ol>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="panel block" *ngIf="extras">
+      <mat-card-header>
+        <div mat-card-avatar class="panel-avatar"><mat-icon>history</mat-icon></div>
+        <mat-card-title>Delay history</mat-card-title>
+      </mat-card-header>
+      <mat-divider></mat-divider>
+      <mat-card-content class="table-scroll">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>When</th>
+              <th>Minutes</th>
+              <th>Reason</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let d of extras.delayHistory">
+              <td class="mono">{{ d.at | date : 'short' }}</td>
+              <td class="mono">{{ d.minutes }}</td>
+              <td>{{ d.reason }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="panel block" *ngIf="extras">
+      <mat-card-header>
+        <div mat-card-avatar class="panel-avatar"><mat-icon>forum</mat-icon></div>
+        <mat-card-title>Communication logs</mat-card-title>
+      </mat-card-header>
+      <mat-divider></mat-divider>
+      <mat-card-content class="table-scroll">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Time</th>
+              <th>Channel</th>
+              <th>Dir</th>
+              <th>Message</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let c of extras.communicationLogs">
+              <td class="mono">{{ c.at | date : 'short' }}</td>
+              <td><span class="chan">{{ c.channel }}</span></td>
+              <td>
+                <span class="dir" [class.in]="c.direction === 'IN'">{{ c.direction }}</span>
+              </td>
+              <td>{{ c.message }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </mat-card-content>
+    </mat-card>
+  </ng-container>
+
+  <mat-card class="empty-state" *ngIf="!flight">
+    <mat-icon>travel_explore</mat-icon>
+    <h2>Flight not available</h2>
+    <p>This flight may have completed its leg or is outside the current filtered set. Return to the dashboard and select an active flight.</p>
+    <button mat-flat-button color="primary" routerLink="/flights">Go to dashboard</button>
+  </mat-card>
+</div>

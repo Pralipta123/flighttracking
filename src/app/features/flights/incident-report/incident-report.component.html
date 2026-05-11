@@ -1,0 +1,90 @@
+<div class="incident-page">
+  <mat-card class="incident-card mat-elevation-z2">
+    <mat-card-header>
+      <div mat-card-avatar class="incident-avatar">
+        <mat-icon>gavel</mat-icon>
+      </div>
+      <mat-card-title>Incident reporting</mat-card-title>
+      <mat-card-subtitle>
+        Reactive form with dynamic validation: <strong>HIGH</strong> severity requires an assigned team; <strong>Communication Failure</strong> unlocks
+        frequency and backup channel fields.
+      </mat-card-subtitle>
+    </mat-card-header>
+    <mat-divider></mat-divider>
+    <mat-card-content>
+      <form [formGroup]="form" (ngSubmit)="submit()" class="form-grid">
+        <mat-form-field appearance="outline">
+          <mat-label>Flight ID</mat-label>
+          <input matInput formControlName="flightId" placeholder="FLT-101" />
+          <mat-error *ngIf="form.get('flightId')?.hasError('required')">Required</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Incident type</mat-label>
+          <mat-select formControlName="incidentType">
+            <mat-option *ngFor="let t of incidentTypes" [value]="t">{{ t }}</mat-option>
+          </mat-select>
+          <mat-error *ngIf="form.get('incidentType')?.hasError('required')">Required</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Severity</mat-label>
+          <mat-select formControlName="severity">
+            <mat-option *ngFor="let s of severities" [value]="s">{{ s }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Assigned team</mat-label>
+          <mat-select formControlName="assignedTeam">
+            <mat-option value="">—</mat-option>
+            <mat-option *ngFor="let tm of teams" [value]="tm">{{ tm }}</mat-option>
+          </mat-select>
+          <mat-hint>Required when severity is HIGH</mat-hint>
+          <mat-error *ngIf="form.get('assignedTeam')?.hasError('required')">Required for HIGH severity</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full">
+          <mat-label>Description</mat-label>
+          <textarea matInput rows="4" formControlName="description"></textarea>
+          <mat-error *ngIf="form.get('description')?.hasError('required')">Required</mat-error>
+          <mat-error *ngIf="form.get('description')?.hasError('minlength')">At least 10 characters</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Timestamp</mat-label>
+          <input matInput [matDatepicker]="picker" formControlName="timestamp" />
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+
+        <div class="comm-block full" *ngIf="showCommFields">
+          <h3 class="section-title">
+            <mat-icon>settings_input_antenna</mat-icon>
+            Communication failure details
+          </h3>
+          <div class="comm-grid">
+            <mat-form-field appearance="outline">
+              <mat-label>Frequency (MHz)</mat-label>
+              <input matInput formControlName="frequency" />
+              <mat-error *ngIf="form.get('frequency')?.hasError('required')">Required for comm failure</mat-error>
+              <mat-error *ngIf="form.get('frequency')?.hasError('pattern')">Numeric frequency</mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Backup channel</mat-label>
+              <input matInput formControlName="backupChannel" />
+              <mat-error *ngIf="form.get('backupChannel')?.hasError('required')">Required for comm failure</mat-error>
+              <mat-error *ngIf="form.get('backupChannel')?.hasError('minlength')">Min 3 characters</mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="actions full">
+          <button mat-stroked-button type="button" routerLink="/flights">Cancel</button>
+          <button mat-flat-button color="primary" type="submit">Submit incident</button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>
