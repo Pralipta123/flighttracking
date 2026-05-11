@@ -163,7 +163,7 @@ This repository includes **[`.github/workflows/github-pages.yml`](.github/workfl
 
 ### Live URL (this repo name)
 
-**https://pralipta123.github.io/flighttracking/flights**
+**https://pralipta123.github.io/flighttracking**
 
 If you **rename the repository**, edit the workflow and set `--base-href` to `/<new-repo-name>/`.
 
